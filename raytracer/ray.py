@@ -1,8 +1,10 @@
 from dataclasses import dataclass, field
+
 from vector import Vector
 
 EPSILON = 1e-07
-ZERO_VECTOR = field(default_factory = lambda: Vector.from_scalar(0))
+ZERO_VECTOR = field(default_factory=lambda: Vector.from_scalar(0))
+
 
 @dataclass
 class Ray:
@@ -17,14 +19,14 @@ class Ray:
 
         h = self.direction.cross_prod(edge2)
         a = edge1.dot_prod(h)
-        
+
         if EPSILON > a > -EPSILON:
             return False
 
         f = 1.0 / a
         s = self.origin - vertex0
         u = f * s.dot_prod(h)
-        
+
         if u < 0 or u > 1:
             return False
 

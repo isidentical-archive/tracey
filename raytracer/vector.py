@@ -1,9 +1,10 @@
 import operator
-from math import sqrt
 from dataclasses import dataclass
 from itertools import repeat
+from math import sqrt
 
 from matrix import Matrix
+
 
 @dataclass
 class Vector:
@@ -53,33 +54,32 @@ class Vector:
         return self.__class__(
             self.y * other.z - self.z * other.y,
             self.z * other.x - self.x * other.z,
-            self.x * other.y - self.y * other.x
+            self.x * other.y - self.y * other.x,
         )
-    
+
     def dot_prod(self, other):
         return sum(vars(self * other).values())
-    
+
     def normalize(self):
         return self / self.length()
-    
+
     def look_at(self, other):
         tmp = self.__class__(0, 0, 1)
         forward = (self - other).normalize()
         right = tmp.normalize().cross_prod(forward)
         up = forward.cross_prod(right)
-        
+
         camtoworld = Matrix(4, 4)
-        
+
         def set_items(level, vector):
             nonlocal camtoworld
 
             for n, item in enumerate(vars(vector).values()):
                 camtoworld[level][n] = item
-        
+
         set_items(0, right)
         set_items(1, forward)
         set_items(2, up)
         set_items(3, self)
-        
-        return camtoworld
 
+        return camtoworld
