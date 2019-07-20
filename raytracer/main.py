@@ -20,11 +20,10 @@ class Job:
 def facing_ratio_shader(px, py, ray_dir, job):
     origin = Vector(*job.cammatrix[3][:3])
     cam_ray = Ray(origin, ray_dir)
-    
     hit = Hit()
     if cam_ray.intersects_object(job.obj, hit):
-        print(1)
-        job.framebuffer[px][py] * 5
+        shade = int(hit.normal.dot_prod(cam_ray.direction * -1) * 255)
+        job.framebuffer[px][py] = Vector(shade, shade, shade)
 
 def render(job):
     inv_width = 1 / job.framew
@@ -43,10 +42,8 @@ def render(job):
             
             xx = (2 * ((x + 0.5) * inv_width) - 1)/2 * angle * aspectratio
             yy = (1 - 2 * ((y + 0.5) * inv_height))/2 * angle
-            xp = Vector.from_scalar(xx)
-            yp = Vector.from_scalar(yy)
             
-            direction = (w + (xp * u)) + (yp * v)
+            direction = (w + (u * xx)) + (v * yy)
             direction = direction.normalize()
             
             facing_ratio_shader(x, y, direction, job)
@@ -56,8 +53,8 @@ def render(job):
 def main(file):
     stl = load_stl(file)
     
-    framew, frameh = 16, 16
-    cammatrix = Vector(100, 100, 150).look_at(Vector(0, 0, 0))    
+    framew, frameh = 165, 165
+    cammatrix = Vector(100, 100, 150).look_at(Vector(0, 0, 0))
     obj = STLObject(Vector(0, 0, 0), stl, Vector(255, 255, 255))
     framebuffer = Matrix(frameh, framew, fill_with = (Vector, 0, 0, 0))
     global job
@@ -84,6 +81,11 @@ def main(file):
     
 if __name__ == '__main__':
     job = main('40mmcube.stl')
+    
+    print("P3")
+    print(job.framew, job.frameh)
+    print("255")
     for y in range(int(job.frameh)):
         for x in range(job.framew):
-            pass
+            print(job.framebuffer[y][x].x, job.framebuffer[y][x].y, job.framebuffer[y][x].z, end = ' ')
+        print()
