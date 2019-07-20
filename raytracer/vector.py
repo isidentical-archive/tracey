@@ -79,7 +79,7 @@ class Vector:
         set_items(0, right)
         set_items(1, forward)
         set_items(2, up)
-        set_items(3, other)
+        set_items(3, self)
         
         return camtoworld
 

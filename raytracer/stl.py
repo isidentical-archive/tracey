@@ -28,6 +28,7 @@ class STLTriangle:
         
         normal = vectors.pop(0)
         points = vectors
+        buf.read(2) # read two bytes of attrbytecount
         return cls(normal, points, 0)
 
 @dataclass
@@ -45,7 +46,6 @@ def load_stl(path):
     with open(path, "rb") as f:
         header = f.read(80)
         total_triangles = int.from_bytes(f.read(4), 'little')
-        
         triangles = []
         for _ in range(total_triangles):
             triangles.append(STLTriangle.from_buf(f))

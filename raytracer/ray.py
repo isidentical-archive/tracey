@@ -35,7 +35,7 @@ class Ray:
 
         t = f * edge2.dot_prod(q)
         if t > EPSILON:
-            hit.intersect_point = ray.origin + (ray.direction * t)
+            hit.intersect_point = self.origin + (self.direction * t)
             return True
         return False
 
